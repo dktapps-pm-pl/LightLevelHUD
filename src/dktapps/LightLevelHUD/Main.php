@@ -27,10 +27,6 @@ class Main extends PluginBase implements Listener{
 				$this->player = $player;
 			}
 
-			private function format(int $n) : string{
-				return str_pad((string) $n, 2, "0", STR_PAD_LEFT);
-			}
-
 			private function line(Vector3 $pos, string $label) : string{
 				$level = $this->player->getLevel();
 				assert($level instanceof Level);
