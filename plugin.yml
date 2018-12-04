@@ -5,3 +5,13 @@ api: 3.0.0
 load: POSTWORLD
 author: dktapps
 description: Display a HUD with light levels at player head, feet and below feet.
+
+commands:
+  lighthud:
+    description: Toggle light HUD
+    permission: lightlevelhud
+
+permissions:
+  lightlevelhud:
+    default: op
+    description: Allows use of /lighthud
