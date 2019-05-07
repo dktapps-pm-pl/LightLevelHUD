@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace dktapps\LightWorldHUD;
+namespace dktapps\LightLevelHUD;
 
 use pocketmine\Player;
 use pocketmine\command\Command;
