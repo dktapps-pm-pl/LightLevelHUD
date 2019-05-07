@@ -1,7 +1,7 @@
 name: LightLevelHUD
 main: dktapps\LightLevelHUD\Main
 version: 0.0.1
-api: 3.0.0
+api: 4.0.0
 load: POSTWORLD
 author: dktapps
 description: Display a HUD with light levels at player head, feet and below feet.

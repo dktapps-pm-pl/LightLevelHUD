@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace dktapps\LightLevelHUD;
+namespace dktapps\LightWorldHUD;
 
+use pocketmine\Player;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
-use pocketmine\level\Level;
 use pocketmine\math\Vector3;
-use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\scheduler\Task;
 use pocketmine\scheduler\TaskHandler;
+use pocketmine\world\World;
 
 class Main extends PluginBase implements Listener{
 	/** @var TaskHandler[] */
@@ -40,9 +40,9 @@ class Main extends PluginBase implements Listener{
 							}
 
 							private function line(Vector3 $pos, string $label) : string{
-								$level = $this->player->getLevel();
-								assert($level instanceof Level);
-								return "$label ($pos->x, $pos->y, $pos->z): block: " . $level->getBlockLightAt($pos->x, $pos->y, $pos->z) . ", sky: " . $level->getBlockSkyLightAt($pos->x, $pos->y, $pos->z);
+								$world = $this->player->getWorld();
+								assert($world instanceof World);
+								return "$label ($pos->x, $pos->y, $pos->z): block: " . $world->getBlockLightAt($pos->x, $pos->y, $pos->z) . ", sky: " . $world->getBlockSkyLightAt($pos->x, $pos->y, $pos->z);
 							}
 
 							public function onRun(int $currentTick) : void{
