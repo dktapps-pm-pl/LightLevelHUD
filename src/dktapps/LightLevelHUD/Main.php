@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace dktapps\LightLevelHUD;
 
-use pocketmine\Player;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\math\Vector3;
+use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\scheduler\Task;
 use pocketmine\scheduler\TaskHandler;
