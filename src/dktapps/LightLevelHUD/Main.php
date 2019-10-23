@@ -50,7 +50,7 @@ class Main extends PluginBase implements Listener{
 									$this->getHandler()->cancel();
 									return;
 								}
-								$f = $this->player->asVector3()->floor();
+								$f = $this->player->getPosition()->floor();
 								$g = $f->subtract(0, 1, 0);
 								$h = $f->add(0, 1, 0);
 
