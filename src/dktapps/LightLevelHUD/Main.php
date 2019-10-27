@@ -6,6 +6,7 @@ namespace dktapps\LightLevelHUD;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\Listener;
 use pocketmine\math\Vector3;
 use pocketmine\player\Player;
@@ -20,6 +21,14 @@ class Main extends PluginBase implements Listener{
 
 	public function onEnable() : void{
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
+	}
+
+	public function onQuit(PlayerQuitEvent $event) : void{
+		$id = $event->getPlayer()->getId();
+		if(isset($this->tasks[$id])){
+			$this->tasks[$id]->cancel();
+			unset($this->tasks[$id]);
+		}
 	}
 
 	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
