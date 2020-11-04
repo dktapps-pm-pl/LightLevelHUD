@@ -49,11 +49,10 @@ class Main extends PluginBase implements Listener{
 
 							private function line(Vector3 $pos, string $label) : string{
 								$world = $this->player->getWorld();
-								assert($world instanceof World);
 								return "$label ($pos->x, $pos->y, $pos->z): block: " . $world->getBlockLightAt($pos->x, $pos->y, $pos->z) . ", sky: " . $world->getBlockSkyLightAt($pos->x, $pos->y, $pos->z);
 							}
 
-							public function onRun(int $currentTick) : void{
+							public function onRun() : void{
 								if(!$this->player->isConnected()){
 									$this->getHandler()->cancel();
 									return;
