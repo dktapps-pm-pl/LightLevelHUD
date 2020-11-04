@@ -49,7 +49,12 @@ class Main extends PluginBase implements Listener{
 
 							private function line(Vector3 $pos, string $label) : string{
 								$world = $this->player->getWorld();
-								return "$label ($pos->x, $pos->y, $pos->z): block: " . $world->getBlockLightAt($pos->x, $pos->y, $pos->z) . ", sky: " . $world->getBlockSkyLightAt($pos->x, $pos->y, $pos->z);
+								return "$label ($pos->x, $pos->y, $pos->z): block: " .
+									$world->getBlockLightAt($pos->x, $pos->y, $pos->z) .
+									", sky (potential): " .
+									$world->getPotentialBlockSkyLightAt($pos->x, $pos->y, $pos->z) .
+									", sky (current): " .
+									$world->getRealBlockSkyLightAt($pos->x, $pos->y, $pos->z);
 							}
 
 							public function onRun() : void{
