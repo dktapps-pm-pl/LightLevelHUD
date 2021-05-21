@@ -11,8 +11,11 @@ use pocketmine\event\Listener;
 use pocketmine\math\Vector3;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
+use pocketmine\scheduler\CancelTaskException;
+use pocketmine\scheduler\ClosureTask;
 use pocketmine\scheduler\Task;
 use pocketmine\scheduler\TaskHandler;
+use pocketmine\utils\TextFormat;
 use pocketmine\world\World;
 
 class Main extends PluginBase implements Listener{
@@ -31,6 +34,18 @@ class Main extends PluginBase implements Listener{
 		}
 	}
 
+	private function line(World $world, Vector3 $pos, string $label) : string{
+		if(($chunk = $world->getChunk($pos->getFloorX() >> 4, $pos->getFloorZ() >> 4)) === null || $chunk->isLightPopulated() !== true){
+			return "$label ($pos->x, $pos->y, $pos->z): " . TextFormat::RED . "LIGHT NOT CALCULATED" . TextFormat::RESET;
+		}
+		return "$label ($pos->x, $pos->y, $pos->z): block: " .
+			$world->getBlockLightAt($pos->x, $pos->y, $pos->z) .
+			", sky (potential): " .
+			$world->getPotentialBlockSkyLightAt($pos->x, $pos->y, $pos->z) .
+			", sky (current): " .
+			$world->getRealBlockSkyLightAt($pos->x, $pos->y, $pos->z);
+	}
+
 	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		switch($command->getName()){
 			case "lighthud":
@@ -39,40 +54,22 @@ class Main extends PluginBase implements Listener{
 						$this->tasks[$sender->getId()]->cancel();
 						unset($this->tasks[$sender->getId()]);
 					}else{
-						$this->tasks[$sender->getId()] = $this->getScheduler()->scheduleRepeatingTask(new class($sender) extends Task{
-							/** @var Player */
-							private $player;
-
-							public function __construct(Player $player){
-								$this->player = $player;
+						$this->tasks[$sender->getId()] = $this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() use ($sender) : void{
+							if(!$sender->isConnected()){
+								unset($this->tasks[$sender->getId()]);
+								throw new CancelTaskException();
 							}
+							$world = $sender->getWorld();
+							$f = $sender->getPosition()->floor();
+							$g = $f->subtract(0, 1, 0);
+							$h = $f->add(0, 1, 0);
 
-							private function line(Vector3 $pos, string $label) : string{
-								$world = $this->player->getWorld();
-								return "$label ($pos->x, $pos->y, $pos->z): block: " .
-									$world->getBlockLightAt($pos->x, $pos->y, $pos->z) .
-									", sky (potential): " .
-									$world->getPotentialBlockSkyLightAt($pos->x, $pos->y, $pos->z) .
-									", sky (current): " .
-									$world->getRealBlockSkyLightAt($pos->x, $pos->y, $pos->z);
-							}
-
-							public function onRun() : void{
-								if(!$this->player->isConnected()){
-									$this->getHandler()->cancel();
-									return;
-								}
-								$f = $this->player->getPosition()->floor();
-								$g = $f->subtract(0, 1, 0);
-								$h = $f->add(0, 1, 0);
-
-								$this->player->sendTip(
-									$this->line($h, "Head") . "\n" .
-									$this->line($f, "Feet") . "\n" .
-									$this->line($g, "Ground")
-								);
-							}
-						}, 2);
+							$sender->sendTip(
+								$this->line($world, $h, "Head") . "\n" .
+								$this->line($world, $f, "Feet") . "\n" .
+								$this->line($world, $g, "Ground")
+							);
+						}), 2);
 					}
 				}
 				return true;
